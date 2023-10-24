@@ -1,0 +1,17 @@
+{
+  "profileName": "DexCopilot",
+  "jobId": "86baa2b7-24f2-4506-96da-9ee7f4594737",
+  "projectId": "52620.015456214154",
+  "time": "2023-07-18T15:27:01.624Z",
+  "log": [
+    "Creating Azure resources...",
+    "Checking the Existence of the Resource Group ...",
+    "Creating Resource Group ...",
+    "> Creating App Registration ...",
+    "Start to add password for App, Id : ",
+    "> Create App Registration Success! ID: ",
+    "Deploying Web App Resource ...",
+    "Deploying Bot Resource ...",
+    "Provisioning completed successfully!"
+  ]
+}

@@ -1,0 +1,66 @@
+[import](common.lg)
+
+# SendActivity_Greeting()
+[Activity
+    Text = ${SendActivity_Greeting_text()}
+]
+
+# SendActivity_Greeting_text()
+- Welcome to your bot.
+
+# SendActivity_t3lFw3()
+[Activity
+    Attachments = ${json(SendActivity_t3lFw3_attachment_nEt51q())}
+]
+
+# SendActivity_t3lFw3_attachment_nEt51q()
+- ${dialog.adpc}
+# SendActivity_RUNnCq()
+[Activity
+    Text = ${SendActivity_RUNnCq_text()}
+]
+
+# SendActivity_RUNnCq_text()
+- ${turn.results}
+# SendActivity_AHJoGh()
+[Activity
+    Text = ${SendActivity_AHJoGh_text()}
+]
+
+# SendActivity_AHJoGh_text()
+- ${dialog.foreach.index}
+# SendActivity_u4sFJ2()
+[Activity
+    Text = ${SendActivity_u4sFJ2_text()}
+]
+
+# SendActivity_u4sFJ2_text()
+- ${dialog.responsarray}
+# SendActivity_8IBcmo()
+[Activity
+    Text = ${SendActivity_8IBcmo_text()}
+]
+
+# SendActivity_8IBcmo_text()
+- ${dialog.adpc}
+# SendActivity_IkSEVa_attachment_nEt51q()
+- ${dialog.adap}
+# SendActivity_IkSEVa()
+[Activity
+    Attachments = ${json(SendActivity_IkSEVa_attachment_nEt51q())}
+]
+
+# SendActivity_vKSV53()
+[Activity
+    Text = ${SendActivity_vKSV53_text()}
+]
+
+# SendActivity_vKSV53_text()
+- Fetching Responses..
+# SendActivity_TA44lo()
+[Activity
+    Attachments = ${json(SendActivity_TA44lo_attachment_qPbYfc())}
+]
+
+# SendActivity_TA44lo_attachment_qPbYfc()
+- ${turn.results.content.adaptiveCard}

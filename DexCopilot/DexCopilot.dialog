@@ -1,0 +1,117 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "name": "DexCopilot",
+    "description": "",
+    "id": "A79tBe"
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnConversationUpdateActivity",
+      "$designer": {
+        "id": "376720",
+        "comment": "This trigger runs when a conversation update activity is sent to the bot. This indicates a user or bot being added or removed from a conversation."
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.Foreach",
+          "$designer": {
+            "id": "518944",
+            "name": "Loop: for each item",
+            "comment": "For each member added to the conversation."
+          },
+          "itemsProperty": "turn.Activity.membersAdded",
+          "actions": [
+            {
+              "$kind": "Microsoft.IfCondition",
+              "$designer": {
+                "id": "641773",
+                "name": "Branch: if/else",
+                "comment": "Checks that that member added ID does not match the bot ID. This prevents the greeting message from being sent when the bot is added to a conversation."
+              },
+              "condition": "=string(dialog.foreach.value.id) != string(turn.Activity.Recipient.id)",
+              "actions": [
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "$designer": {
+                    "id": "859266",
+                    "name": "Send a response"
+                  },
+                  "activity": "${SendActivity_Greeting()}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "$kind": "Microsoft.OnUnknownIntent",
+      "$designer": {
+        "id": "mb2n1u",
+        "comment": "This trigger fires when an incoming activity is not handled by any other trigger."
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SetProperties",
+          "$designer": {
+            "id": "zh0wCn"
+          },
+          "assignments": [
+            {
+              "property": "dialog.userquestion",
+              "value": "=replace(replace(replace(replace(turn.activity.text, ' \\ ', '\\\\'), '\"', '\\\"'), ' ', '\\r'), ' ', '\\n')"
+            },
+            {
+              "property": "dialog.userq",
+              "value": "=concat(' {\"prompt\": \"', trim(dialog.userquestion), '\" }')"
+            },
+            {
+              "value": "=json(replace(dialog.userq, ',]', ']'))",
+              "property": "dialog.json"
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "vKSV53"
+          },
+          "activity": "${SendActivity_vKSV53()}"
+        },
+        {
+          "$kind": "Microsoft.HttpRequest",
+          "$designer": {
+            "id": "F6tacL"
+          },
+          "resultProperty": "turn.results",
+          "method": "POST",
+          "url": "=settings.api.skapiurl",
+          "contentType": "application/json",
+          "responseType": "json",
+          "body": "=dialog.json"
+        },
+        {
+          "$kind": "Microsoft.SetProperty",
+          "$designer": {
+            "id": "WTBGXW"
+          },
+          "property": "dialog.adpcardjson",
+          "value": "=json(replace(replace(replace(replace(turn.results.content.adaptiveCard, ' \\ ', '\\\\'), '\"', '\\\"'), ' ', '\\r'), ' ', '\\n'))"
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "TA44lo"
+          },
+          "activity": "${SendActivity_TA44lo()}"
+        }
+      ]
+    }
+  ],
+  "generator": "DexCopilot.lg",
+  "id": "DexCopilot",
+  "recognizer": "DexCopilot.lu.qna"
+}

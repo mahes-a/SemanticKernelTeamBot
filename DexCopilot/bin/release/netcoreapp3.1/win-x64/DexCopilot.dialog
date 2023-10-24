@@ -1,0 +1,259 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "name": "DexCopilot",
+    "description": "",
+    "id": "A79tBe"
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnConversationUpdateActivity",
+      "$designer": {
+        "id": "376720",
+        "comment": "This trigger runs when a conversation update activity is sent to the bot. This indicates a user or bot being added or removed from a conversation."
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.Foreach",
+          "$designer": {
+            "id": "518944",
+            "name": "Loop: for each item",
+            "comment": "For each member added to the conversation."
+          },
+          "itemsProperty": "turn.Activity.membersAdded",
+          "actions": [
+            {
+              "$kind": "Microsoft.IfCondition",
+              "$designer": {
+                "id": "641773",
+                "name": "Branch: if/else",
+                "comment": "Checks that that member added ID does not match the bot ID. This prevents the greeting message from being sent when the bot is added to a conversation."
+              },
+              "condition": "=string(dialog.foreach.value.id) != string(turn.Activity.Recipient.id)",
+              "actions": [
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "$designer": {
+                    "id": "859266",
+                    "name": "Send a response"
+                  },
+                  "activity": "${SendActivity_Greeting()}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "$kind": "Microsoft.OnUnknownIntent",
+      "$designer": {
+        "id": "mb2n1u",
+        "comment": "This trigger fires when an incoming activity is not handled by any other trigger."
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SetProperties",
+          "$designer": {
+            "id": "zh0wCn"
+          },
+          "assignments": [
+            {
+              "property": "dialog.userquestion",
+              "value": "=replace(replace(replace(replace(turn.activity.text, ' \\ ', '\\\\'), '\"', '\\\"'), ' ', '\\r'), ' ', '\\n')"
+            },
+            {
+              "property": "dialog.userq",
+              "value": "=concat(' {\"prompt\": \"', trim(dialog.userquestion), '\" }')"
+            },
+            {
+              "value": "=json(replace(dialog.userq, ',]', ']'))",
+              "property": "dialog.json"
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "vKSV53"
+          },
+          "activity": "${SendActivity_vKSV53()}"
+        },
+        {
+          "$kind": "Microsoft.HttpRequest",
+          "$designer": {
+            "id": "F6tacL"
+          },
+          "resultProperty": "turn.results",
+          "method": "POST",
+          "url": "=settings.api.skapiurl",
+          "contentType": "application/json",
+          "responseType": "json",
+          "body": "=dialog.json"
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "RUNnCq"
+          },
+          "activity": "${SendActivity_RUNnCq()}",
+          "disabled": true
+        },
+        {
+          "$kind": "Microsoft.SetProperty",
+          "$designer": {
+            "id": "D1KrAK"
+          },
+          "property": "dialog.hardcod",
+          "value": "{    \"“lgType”\": \"“Activity”\",    \"“text”\": {      \"statusCode\": 200,      \"reasonPhrase\": \"OK\",      \"headers\": {        \"Date\": \"Wed, 19 Jul 2023 03:33:43 GMT\",        \"Server\": \"Microsoft-IIS/10.0\",        \"Set-Cookie\": \"ARRAffinity=92ca53ad8db4fbb93d4d3b7d8ab54dcf8ffecb2d731f25b0e91ad575d7534c3f;Path=/;HttpOnly;Secure;Domain=dexopenapi.azurewebsites.net\",        \"Transfer-Encoding\": \"chunked\",        \"Vary\": \"Accept-Encoding\",        \"Request-Context\": \"appId=cid-v1:1d64da03-487a-4a92-aace-d43d43300f9e\",        \"X-Powered-By\": \"ASP.NET\"      },      \"content\": {        \"derivedIntent\": \"CustomerSupportTickets\",        \"queryText\": \"SELECT TOP 10 TicketChannel, COUNT(*) AS TotalCount FROM support_ticketsstreamed GROUP BY TicketChannel; -- show me top 10 records by channel and total count for customer support cases\",        \"generatedResponse\": \"TicketChannel,TotalCount\\r\\nChat,60\\r\\nPhone,57\\r\\nSocial media,63\\r\\nEmail,70\",        \"insights\": \"- Email is the most popular ticket channel with a total count of 70.\\n- Chat and phone are the least popular ticket channels with a total count of 60 and 57 respectively.\\n- Social media has a total count of 63, which is slightly higher than chat and phone but lower than email.\\n- There is not a significant difference in the total count between the four ticket channels, with the highest and lowest counts differing by only 13.\",        \"adaptiveCard\": \"{\\n  \\\"type\\\": \\\"AdaptiveCard\\\",\\n  \\\"body\\\": [\\n    {\\n      \\\"type\\\": \\\"ColumnSet\\\",\\n      \\\"columns\\\": [\\n        {\\n          \\\"type\\\": \\\"Column\\\",\\n          \\\"items\\\": [\\n            {\\n              \\\"type\\\": \\\"TextBlock\\\",\\n              \\\"weight\\\": \\\"bolder\\\",\\n              \\\"text\\\": \\\"TicketChannel\\\"\\n            },\\n            {\\n              \\\"type\\\": \\\"TextBlock\\\",\\n              \\\"separator\\\": true,\\n              \\\"text\\\": \\\"Chat\\\"\\n            },\\n            {\\n              \\\"type\\\": \\\"TextBlock\\\",\\n              \\\"separator\\\": true,\\n              \\\"text\\\": \\\"Phone\\\"\\n            },\\n            {\\n              \\\"type\\\": \\\"TextBlock\\\",\\n              \\\"separator\\\": true,\\n              \\\"text\\\": \\\"Social media\\\"\\n            },\\n            {\\n              \\\"type\\\": \\\"TextBlock\\\",\\n              \\\"separator\\\": true,\\n              \\\"text\\\": \\\"Email\\\"\\n            }\\n          ]\\n        },\\n        {\\n          \\\"type\\\": \\\"Column\\\",\\n          \\\"items\\\": [\\n            {\\n              \\\"type\\\": \\\"TextBlock\\\",\\n              \\\"weight\\\": \\\"bolder\\\",\\n              \\\"text\\\": \\\"TotalCount\\\"\\n            },\\n            {\\n              \\\"type\\\": \\\"TextBlock\\\",\\n              \\\"separator\\\": true,\\n              \\\"text\\\": \\\"60\\\"\\n            },\\n            {\\n              \\\"type\\\": \\\"TextBlock\\\",\\n              \\\"separator\\\": true,\\n              \\\"text\\\": \\\"57\\\"\\n            },\\n            {\\n              \\\"type\\\": \\\"TextBlock\\\",\\n              \\\"separator\\\": true,\\n              \\\"text\\\": \\\"63\\\"\\n            },\\n            {\\n              \\\"type\\\": \\\"TextBlock\\\",\\n              \\\"separator\\\": true,\\n              \\\"text\\\": \\\"70\\\"\\n            }\\n          ]\\n        }\\n      ]\\n    }\\n  ]\\n}\",        \"processTimeSeconds\": 31      }   }  }",
+          "disabled": true
+        },
+        {
+          "$kind": "Microsoft.SetProperty",
+          "$designer": {
+            "id": "WTBGXW"
+          },
+          "property": "dialog.adpcardjson",
+          "value": "=json(replace(replace(replace(replace(turn.results.content.adaptiveCard, ' \\ ', '\\\\'), '\"', '\\\"'), ' ', '\\r'), ' ', '\\n'))"
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "TA44lo"
+          },
+          "activity": "${SendActivity_TA44lo()}"
+        },
+        {
+          "$kind": "Microsoft.SetProperty",
+          "$designer": {
+            "id": "YmYErR"
+          },
+          "property": "dialog.responsarray",
+          "value": "=split(turn.results.content.generatedResponse, '\\r\\n')",
+          "disabled": true
+        },
+        {
+          "$kind": "Microsoft.SetProperty",
+          "$designer": {
+            "id": "aICGPE"
+          },
+          "property": "dialog.responsarray",
+          "value": "=split('TicketChannel,TotalCount\\r\\nChat,60\\r\\nPhone,57\\r\\nSocial media,63\\r\\nEmail,70','\\r\\n')",
+          "disabled": true
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "u4sFJ2"
+          },
+          "activity": "${SendActivity_u4sFJ2()}",
+          "disabled": true
+        },
+        {
+          "$kind": "Microsoft.Foreach",
+          "$designer": {
+            "id": "oR2eMo"
+          },
+          "index": "dialog.foreach.index",
+          "value": "dialog.foreach.value",
+          "actions": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "AHJoGh"
+              },
+              "activity": "${SendActivity_AHJoGh()}",
+              "disabled": true
+            },
+            {
+              "$kind": "Microsoft.EditArray",
+              "$designer": {
+                "id": "Pk53VC"
+              },
+              "changeType": "push",
+              "itemsProperty": "dialog.cardarray",
+              "value": "=concat(' {\"type\": \"TextBlock\",\"text\":  \"',trim(dialog.foreach.value),'\" , \"wrap\": true  }')",
+              "disabled": true
+            },
+            {
+              "$kind": "Microsoft.EditArray",
+              "$designer": {
+                "id": "CM10z8"
+              },
+              "changeType": "push",
+              "itemsProperty": "dialog.cardarray",
+              "value": "=if(equals(dialog.foreach.index,0), concat(' {\"type\": \"TextBlock\",\"text\":  \"',trim(dialog.foreach.value),'\" , \"wrap\": true , \"weight\": \"Bolder\" }'), concat(' {\"type\": \"TextBlock\",\"text\":  \"',trim(dialog.foreach.value),'\" , \"wrap\": true  }'))",
+              "disabled": true
+            }
+          ],
+          "itemsProperty": "dialog.responsarray",
+          "disabled": true
+        },
+        {
+          "$kind": "Microsoft.SetProperties",
+          "$designer": {
+            "id": "37OANa"
+          },
+          "assignments": [
+            {
+              "property": "dialog.cardarraystrtmp",
+              "value": "=join(dialog.cardarray, ',')"
+            },
+            {
+              "property": "dialog.cardarraystr",
+              "value": "=substring(dialog.cardarraystrtmp, 0, (length(dialog.cardarraystrtmp)-1))"
+            }
+          ],
+          "disabled": true
+        },
+        {
+          "$kind": "Microsoft.SetProperty",
+          "$designer": {
+            "id": "dFFBFp"
+          },
+          "property": "dialog.adpc",
+          "value": "=concat('{   \"type\": \"AdaptiveCard\",   \"$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",   \"version\": \"1.2\",   \"body\": [ ',dialog.cardarraystrtmp,' ] }' )",
+          "disabled": true
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "8IBcmo"
+          },
+          "activity": "${SendActivity_8IBcmo()}",
+          "disabled": true
+        },
+        {
+          "$kind": "Microsoft.SetProperty",
+          "$designer": {
+            "id": "JHv8cq"
+          },
+          "property": "dialog.adap",
+          "value": "{   \"type\": \"AdaptiveCard\",   \"$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",   \"version\": \"1.2\",   \"body\": [     {       \"type\": \"TextBlock\",       \"text\": \"Appid,AppDescription,AccessibilityIssue,Error,CheckDate\",       \"wrap\": true     },     {       \"type\": \"TextBlock\",       \"text\": \"1001,Accenture Application 1,Missing or Improperly Labeled Form Fields,1,10/1/2022\",       \"wrap\": true     },     {       \"type\": \"TextBlock\",       \"text\": \"1001,Accenture Saas Application2,Missing or Improperly Labeled Form Fields and PDF links,1,10/1/2022\",       \"wrap\": true     }   ] }",
+          "disabled": true
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "IkSEVa"
+          },
+          "activity": "${SendActivity_IkSEVa()}",
+          "disabled": true
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "t3lFw3"
+          },
+          "activity": "${SendActivity_t3lFw3()}",
+          "disabled": true
+        }
+      ]
+    }
+  ],
+  "generator": "DexCopilot.lg",
+  "id": "DexCopilot",
+  "recognizer": "DexCopilot.lu.qna"
+}
